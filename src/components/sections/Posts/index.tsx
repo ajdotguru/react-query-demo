@@ -1,19 +1,7 @@
-import { List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { useQuery } from 'react-query';
-import { Spinner } from 'components/lib';
-import { fetchPosts } from 'api/posts';
+import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { IPost } from 'models/posts';
 
-export const Posts = () => {
-	const { data, isLoading } = useQuery('posts', fetchPosts);
-
-	if (isLoading) {
-		return <Spinner />;
-	}
-
-	if (!data) {
-		return <Typography variant="h1">No Post!</Typography>;
-	}
-
+export const Posts: React.FC<{ data: IPost[] }> = ({ data }) => {
 	return (
 		<List>
 			{data.map(({ id, title }) => (
