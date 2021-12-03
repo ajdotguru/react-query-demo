@@ -6,3 +6,9 @@ export const fetchPosts = async (pageNum: number) => {
 
 	return data;
 };
+
+export const deletePost = async (postId: number) => {
+	const { data } = await axios.delete(`posts/${postId}`);
+
+	return data;
+};

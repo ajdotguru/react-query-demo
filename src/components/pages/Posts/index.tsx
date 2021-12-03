@@ -7,6 +7,16 @@ import { fetchPosts } from 'api/posts';
 
 const maxPostPages = 10;
 
+// isLoading is a subset of isFetching.
+// isFetching - the async query function hasn't yet resolved
+// isLoading - no cached data , plus isFetching
+
+// Optimistic updates (assuming change will happen)
+// Update React Query Cache with data returned from the server
+// Trigger re-fetch of relevant data (invalidation)
+
+// useQuery uses retries 3 times by default
+
 const PostsPage = () => {
 	const [currentPage, setCurrentPage] = useState(0);
 	const queryClient = useQueryClient();
@@ -37,9 +47,11 @@ const PostsPage = () => {
 	}
 
 	return (
-		<Stack>
-			<Typography variant="h1">Posts</Typography>
-			<Posts data={data} />
+		<Stack spacing={5}>
+			<Box>
+				<Typography variant="h1">Posts</Typography>
+				<Posts data={data} />
+			</Box>
 			<Box display="flex" justifyContent="space-around" alignItems="center">
 				<Button
 					variant="contained"
