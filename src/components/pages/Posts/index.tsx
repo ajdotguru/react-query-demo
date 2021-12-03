@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { Spinner } from 'components/lib';
 import { Posts } from 'components/sections';
 import { fetchPosts } from 'api/posts';
@@ -9,11 +9,22 @@ const maxPostPages = 10;
 
 const PostsPage = () => {
 	const [currentPage, setCurrentPage] = useState(0);
+	const queryClient = useQueryClient();
+
+	useEffect(() => {
+		if (currentPage < maxPostPages) {
+			const nextPage = currentPage + 1;
+
+			queryClient.prefetchQuery(['posts', nextPage], () => fetchPosts(nextPage as number));
+		}
+	}, [currentPage, queryClient]);
+
 	const { data, isLoading } = useQuery(
 		['posts', currentPage],
 		() => fetchPosts(currentPage as number),
 		{
-			staleTime: 100000,
+			staleTime: 1000 * 60,
+			keepPreviousData: true,
 		}
 	);
 
@@ -32,7 +43,7 @@ const PostsPage = () => {
 			<Box display="flex" justifyContent="space-around" alignItems="center">
 				<Button
 					variant="contained"
-					disabled={currentPage <= 1}
+					disabled={currentPage <= 0}
 					onClick={() => setCurrentPage(prevPage => prevPage - 1)}
 				>
 					Previous Page
